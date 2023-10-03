@@ -1,5 +1,6 @@
 # Instalacja frameworka Angular i utworzenie pierwszego projektu
 
+
 1. Pobierz i zainstaluj Visual Studio Code - https://code.visualstudio.com.
 
 2. Pobierz i zainstaluj Node.js - https://nodejs.org/en/download.
