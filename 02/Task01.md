@@ -1,5 +1,6 @@
 # Utworzenie komponentu dodawania studenta
 
+
 1. Za pomocą poniższego polecenia utwórz nowy komponent 
 
 ```ps
