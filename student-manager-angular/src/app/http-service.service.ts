@@ -22,4 +22,9 @@ export class HttpService {
     let deleteStudentUrl = this.studentApiUrl + "/" + id;
     return this.httpClient.delete<Student>(deleteStudentUrl);
   }
+
+  //Funkcja wysyłająca request - POST do endpointu
+  addStudent(student: Student){
+    return this.httpClient.post<Student>(this.studentApiUrl, student);
+  }
 }
