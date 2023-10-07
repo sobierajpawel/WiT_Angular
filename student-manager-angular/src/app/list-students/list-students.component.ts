@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpService } from '../http-service.service';
 import { Student } from '../student';
+import { TypeDisplaying } from '../type-displaying';
 
 
 @Component({
@@ -9,15 +10,26 @@ import { Student } from '../student';
   styleUrls: ['./list-students.component.css']
 })
 export class ListStudentsComponent {
-    // 1. Dodamy interfejs Studenta - DONE!
-    // 2. Utworzymy sobie serwis do komunikacji z cześcia backendowa - wyślę requst GET - DONE!
-    // 3. Sprawdze czy pobrałem dane
-    isTableVisible : boolean = false;
-    buttonText = "Pokaż";
+    // 1. Dodanie przycisku do usunięcia danych -> html - DONE!
+    // 2. Wysłanie requesta HTTP - DELETE -> httpService - DONE!
+    // 3. Obsłużenie metody usuwania -> ts
+    isTableVisible : boolean = true;
+    buttonText = "Schowaj";
     students : Student[] = [];
+    studentIdToRemove : number[] = [];
+    displayingTable : TypeDisplaying = TypeDisplaying.TABLE;
+    TypeDisplaying = TypeDisplaying;
 
     constructor(private httpService: HttpService){
+      this.getData();
+    }
 
+    changeDisplayingForm(){
+      if (this.displayingTable == TypeDisplaying.TABLE){
+        this.displayingTable = TypeDisplaying.LIST
+      } else {
+        this.displayingTable = TypeDisplaying.TABLE;
+      }
     }
 
     showTable(){
@@ -32,9 +44,46 @@ export class ListStudentsComponent {
     }
 
     getData(){
+      console.log("Przed subscribe");
+
       this.httpService.getStudents().subscribe(data =>{
-        console.log(data);
+        console.log("Wewnątrz subscribe");
         this.students = data;
       });
+
+      console.log("Po subscribe");
+    }
+
+    isNameGlennaReichert(name : string){
+      return name.toUpperCase() == 'GLENNA REICHERT';
+    }
+
+    delete(id : number){
+      this.httpService.deleteStudent(id)
+        .subscribe(()=>{
+          this.students = this.students.filter(x=>x.id != id);
+        });
+    }
+
+    changeStatus(event : any, studentId : number){
+      console.log(event.checked);
+      if (event.checked){
+        this.studentIdToRemove.push(studentId);
+      } else {
+        this.studentIdToRemove = this.studentIdToRemove
+          .filter(x=>x != studentId);
+      }
+
+      console.log(this.studentIdToRemove);
+    }
+
+    deleteGlobalStudents(){
+      this.studentIdToRemove.forEach(x=>{
+        this.httpService.deleteStudent(x)
+        .subscribe(()=>{
+          console.log("Usunięto studenta o id " + x);
+          this.students = this.students.filter(d=>d.id != x);
+        })
+      })
     }
 }
