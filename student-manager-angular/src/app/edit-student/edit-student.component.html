@@ -1,0 +1,32 @@
+<ng-container *ngIf="student">
+    <h4>Edycja studenta {{student.name}}</h4>
+
+    <form (ngSubmit)="save()">
+        <div class="row">
+            <!-- Imię i nazwisko studenta -->
+            <div class="col-5">
+                <label class="form-label">Imię i nazwisko studenta</label>
+                <input name="studentName" [(ngModel)]="student.name" class="form-control" />
+            </div>
+            <!-- Email studenta -->
+            <div class="col-5">
+                <label class="form-label">Email</label>
+                <input name="studentEmail" [(ngModel)]="student.email" class="form-control" />
+            </div>
+        </div>
+        <!-- Przycisk zapisz/powrót -->
+        <div style="margin-top:20px">
+            <button 
+            class="btn btn-outline-success">Zapisz</button>
+            <button type="button" 
+            (click)="getBack()"
+            style="margin-left:10px" 
+            class="btn btn-outline-secondary">Powrót</button>
+        </div>
+    </form>
+</ng-container>
+
+<div *ngIf="isStudentUpdated" 
+    style="margin-top:20px" class="alert alert-success">
+    Zaaktualizowano studenta!
+</div>

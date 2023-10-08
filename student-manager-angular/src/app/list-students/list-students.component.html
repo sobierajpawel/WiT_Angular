@@ -16,6 +16,13 @@
     Zmień wyświetlanie
 </button>
 
+
+<div class="col-4">
+    <label class="form-label">Wyszukaj:</label>
+    <input #searchInput (keyup)="search(searchInput.value)" class="form-control" />
+</div>
+
+
 <table *ngIf="isTableVisible && displayingTable == TypeDisplaying.TABLE" class="table table-hover ">
     <thead>
         <tr>
@@ -32,14 +39,17 @@
              'table-danger': student.id >= 4 && student.id <= 6}">
             <td><input type="checkbox" (change)="changeStatus($event.target, student.id)"></td>
             <td>{{student.id}}</td>
-            <td>{{student.name | uppercase}}</td>
-            <td>
-                <p *ngIf="student.id < 4 || student.id > 6">
+            <td [innerHTML]="student.name | highlight:searchPhrase"></td>
+            <td [innerHTML]="student.email | highlight:searchPhrase">
+                <!-- <p *ngIf="student.id < 4 || student.id > 6">
                     {{student.email | lowercase}}
-                </p>
+                </p> -->
             </td>
             <td>
-                <button class="btn btn-outline-danger" (click)="delete(student.id)">
+                <a [routerLink]="'/edit/'+student.id" class="btn btn-outline-warning">
+                    Edycja
+                </a>
+                <button style="margin-left:5px" class="btn btn-outline-danger" (click)="delete(student.id)">
                     Usuń</button>
             </td>
         </tr>
@@ -50,6 +60,9 @@
     <div *ngFor="let student of students">
         <h4>{{student.name}}</h4>
         <p style="color:blue">{{student.email}}</p>
+        <a [routerLink]="'/edit/'+student.id" class="btn btn-outline-warning">
+            Edycja
+        </a>
         <button (click)="delete(student.id)" class="btn btn-outline-danger">
             Usuń</button>
     </div>

@@ -6,18 +6,26 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { ListStudentsComponent } from './list-students/list-students.component';
 import {HttpClientModule} from '@angular/common/http';
 import { AddStudentComponent } from './add-student/add-student.component';
+import { EditStudentComponent } from './edit-student/edit-student.component';
+import { FormsModule } from '@angular/forms';
+import { HomeComponent } from './home/home.component';
+import { HighlightPipe } from './highlight.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
     ListStudentsComponent,
-    AddStudentComponent
+    AddStudentComponent,
+    EditStudentComponent,
+    HomeComponent,
+    HighlightPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

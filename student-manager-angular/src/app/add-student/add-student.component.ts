@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpService } from '../http-service.service';
 import { Student } from '../student';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-add-student',
@@ -9,38 +10,69 @@ import { Student } from '../student';
 })
 export class AddStudentComponent {
   isFormValid = true;
-  errorText : string[] = [];
+  errorText: string[] = [];
+  isFormSubmitting: boolean = false;
+  isAddedSuccessful = false;
+  isAddedError = false;
+  displayingTimeMessageMs = 10000;
 
-  constructor(private httpService : HttpService){}
+  constructor(private httpService: HttpService) { }
 
-  save(studentName : string, email : string){
+  isValidate(studentName : string, email:string) : boolean{
+    let isFormValid = true;
+    
+    if (studentName.length == 0) {
+      isFormValid = false;
+      this.errorText.push("Nazwa studenta jest wymagana");
+    }
+
+    if (studentName.length > 10) {
+      isFormValid = false;
+      this.errorText.push("Nazwa studenta musi mieć długość mniejszą od 10");
+    }
+
+    if (email.includes("@") == false) {
+      isFormValid = false;
+      this.errorText.push("Email jest niepoprawny");
+    }
+
+    return isFormValid;
+  }
+
+  save(studentName: string, email: string) {
     console.log("student:" + studentName + ", email:" + email);
     this.isFormValid = true;
     this.errorText = [];
 
-    if (studentName.length == 0){
-      this.isFormValid = false;
-      this.errorText.push("Nazwa studenta jest wymagana");
-    }
+    this.isFormValid = this.isValidate(studentName, email);
 
-    if(studentName.length > 10){
-      this.isFormValid = false;
-      this.errorText.push("Nazwa studenta musi mieć długość mniejszą od 10");
-    }
-
-    if(email.includes("@") == false){
-      this.isFormValid = false;
-      this.errorText.push("Email jest niepoprawny");
-    }
-
-    if(this.isFormValid){
-      this.httpService.addStudent({name : studentName,email} as Student)
-        .subscribe((data)=>{
-          
-        });
+    if (this.isFormValid) {
+      this.isFormSubmitting = true;
+      setTimeout(() => {
+        this.httpService.addStudent({ name: studentName, email } as Student)
+          .pipe(delay(1000))
+          .subscribe({
+            next: (data) => {
+              this.isFormSubmitting = false;
+              this.isAddedSuccessful = true;
+              
+              this.hideAddedSuccessfulMessage();
+            },
+            error: () => {
+              this.isFormSubmitting = false;
+              this.isAddedError = true;
+            }
+          });
+      }, 3000)
     }
 
     console.log(this.errorText);
     return false;
+  }
+
+  hideAddedSuccessfulMessage(){
+    setTimeout(()=>{
+      this.isAddedSuccessful = false;
+    }, this.displayingTimeMessageMs);
   }
 }
